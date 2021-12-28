@@ -1,24 +1,50 @@
-import Phaser from 'phaser';
+import Phaser, { Scenes } from 'phaser';
+import TextureKeys from '../consts/TextureKeys';
+import SceneKeys from '../consts/SceneKeys';
 
 export default class Demo extends Phaser.Scene {
+  private background!: Phaser.GameObjects.Image;
+  private paddle!: Phaser.Physics.Arcade.Sprite;
+  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+
   constructor() {
-    super('GameScene');
+    super(SceneKeys.Game);
   }
 
   preload() {
-    this.load.image('logo', 'assets/phaser3-logo.png');
+    this.cursors = this.input.keyboard.createCursorKeys();
   }
 
   create() {
-    const logo = this.add.image(400, 70, 'logo');
+    const { width, height } = this.scale;
 
-    this.tweens.add({
-      targets: logo,
-      y: 350,
-      duration: 1500,
-      ease: 'Sine.inOut',
-      yoyo: true,
-      repeat: -1
-    });
+    this.background = this.add.image(0, 0, TextureKeys.Background)
+    .setOrigin(0, 0);
+
+    this.paddle = this.physics.add.sprite(width * 0.5, height - 30, TextureKeys.Paddle)
+ 
+    this.paddle.setScale (.25);
+    this.paddle.setCollideWorldBounds(true);
+
+    this.physics.world.setBounds(
+      0,
+      0,
+      width,
+      height - 30
+    );
+
+    
+  }
+
+  update(t: Number, dt: Number) {
+    if(this.cursors.left.isDown) {
+      this.paddle.setVelocityX(-500);
+    }
+    else if (this.cursors.right.isDown) {
+      this.paddle.setVelocityX(500);
+    }
+    else {
+      this.paddle.setVelocityX(0);
+    }
   }
 }
