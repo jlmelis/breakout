@@ -1,5 +1,6 @@
 enum TextureKeys {
     Background = 'background',
+    Ball = 'ball',
     Paddle = 'paddle'
 }
 

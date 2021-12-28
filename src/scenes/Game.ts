@@ -5,6 +5,7 @@ import SceneKeys from '../consts/SceneKeys';
 export default class Demo extends Phaser.Scene {
   private background!: Phaser.GameObjects.Image;
   private paddle!: Phaser.Physics.Arcade.Sprite;
+  private ball!: Phaser.Physics.Arcade.Sprite;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
   constructor() {
@@ -21,10 +22,15 @@ export default class Demo extends Phaser.Scene {
     this.background = this.add.image(0, 0, TextureKeys.Background)
     .setOrigin(0, 0);
 
+    // Create Paddle
     this.paddle = this.physics.add.sprite(width * 0.5, height - 30, TextureKeys.Paddle)
- 
     this.paddle.setScale (.25);
     this.paddle.setCollideWorldBounds(true);
+
+    // Create Ball
+    this.ball = this.physics.add.sprite(width * 0.5, height *0.5, TextureKeys.Ball);
+    this.ball.setScale(.25);
+    this.ball.setCollideWorldBounds(true);
 
     this.physics.world.setBounds(
       0,
