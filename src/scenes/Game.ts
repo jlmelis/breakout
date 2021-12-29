@@ -25,7 +25,7 @@ export default class Game extends Phaser.Scene {
 
     // Create Paddle
     this.paddle = this.physics.add.sprite(
-      width * 0.5, height - 30, 
+      width * 0.5, height - 50, 
       TextureKeys.Paddle);
     this.paddle.setImmovable(true);
     this.paddle.setCollideWorldBounds(true);
@@ -36,9 +36,11 @@ export default class Game extends Phaser.Scene {
     this.ball = this.physics.add.sprite(width * 0.5, height *0.5, TextureKeys.Ball);
     this.ball.setScale(.25);
     this.ball.setCollideWorldBounds(true);
+
     this.ball.setVelocityY(500);
     this.ball.setBounce(1);
-       
+    
+    this.ball.on('worldBounds', () => {console.log('out of bounds')});
     this.physics.add.collider(this.ball, this.paddle, this.ballHitPaddle, undefined, this );
     
 
@@ -50,7 +52,7 @@ export default class Game extends Phaser.Scene {
       0,
       0,
       width,
-      height - 30
+      height
     );
     this.physics.world.checkCollision.down = false;
     
@@ -65,6 +67,13 @@ export default class Game extends Phaser.Scene {
     }
     else {
       this.paddle.setVelocityX(0);
+    }
+
+    // Out of bounds check. if the ball bounds are still within the world this returns true
+    // if false that means the ball has lefft the screen and we need to end the game.
+    if (!Phaser.Geom.Rectangle.Overlaps(this.physics.world.bounds, this.ball.getBounds())) {
+      //console.log('world bounds');
+      this.scene.run(SceneKeys.GameOver);
     }
   }
 
