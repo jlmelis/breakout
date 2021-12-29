@@ -184,15 +184,12 @@ export default class Game extends Phaser.Scene {
           let brickX = (col * (brickInfo.width)) + brickInfo.offset.left;
           let brickY = (row * (brickInfo.height + brickInfo.padding)) + brickInfo.offset.top;
 
-          const brick  = this.bricks.get(
+          this.bricks.get(
             brickX,
             brickY,
             TextureKeys.Brick
           ) as Phaser.Physics.Arcade.Sprite;
 
-          // brick.setActive(true);
-          // const body = brick.body as Phaser.Physics.Arcade.StaticBody;
-          // body.enable = true;
       }
     }
 
