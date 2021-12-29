@@ -109,6 +109,11 @@ export default class Game extends Phaser.Scene {
       this.paddle.setVelocityX(0);
     }
 
+    // touch input
+    if(this.input.mousePointer.isDown) {
+      this.paddle.setPosition(this.input.x, this.paddle.y);
+    }
+
     // Out of bounds check. if the ball bounds are still within the world this returns true
     // if false that means the ball has lefft the screen and we need to end the game.
     if (!Phaser.Geom.Rectangle.Overlaps(this.physics.world.bounds, this.ball.getBounds())) {
