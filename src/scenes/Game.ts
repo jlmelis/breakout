@@ -8,6 +8,8 @@ export default class Game extends Phaser.Scene {
   private ball!: Phaser.Physics.Arcade.Sprite;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private bricks!: Phaser.Physics.Arcade.StaticGroup;
+  private brickPieceEmitter!: Phaser.GameObjects.Particles.ParticleEmitter;
+  private starEmitter!: Phaser.GameObjects.Particles.ParticleEmitter;
 
   // score properties
   private scoreLabel!: Phaser.GameObjects.Text;
@@ -62,6 +64,28 @@ export default class Game extends Phaser.Scene {
     this.spawnBricks();
     this.physics.add.collider(this.ball, this.bricks, this.ballHitBricks, undefined, this );
 
+    // emmitters for block explosion
+    this.brickPieceEmitter = this.add.particles(TextureKeys.BrickPiece).createEmitter({
+      speed: { min: -800, max: 800 },
+      angle: { min: 0, max: 360 },
+      scale: { start: 1, end: 0 },
+      blendMode: 'SCREEN',
+      visible: false,
+      active: false,
+      lifespan: 600,
+      gravityY: 800
+    });
+    this.starEmitter = this.add.particles(TextureKeys.Star).createEmitter({
+      speed: { min: -800, max: 800 },
+      angle: { min: 0, max: 360 },
+      scale: { start: .5, end: 0 },
+      blendMode: 'SCREEN',
+      visible: false,
+      active: false,
+      lifespan: 600,
+      gravityY: 800
+    });
+
     this.physics.world.setBounds(
       0,
       0,
@@ -91,6 +115,7 @@ export default class Game extends Phaser.Scene {
       //console.log('world bounds');
       this.scene.run(SceneKeys.GameOver);
     }
+
   }
 
   private ballHitPaddle(
@@ -110,6 +135,21 @@ export default class Game extends Phaser.Scene {
 
       this.score += 10;
       this.scoreLabel.text = this.getScoreText();
+
+      this.brickPieceEmitter.active = true;
+      this.brickPieceEmitter.visible = true;
+      this.brickPieceEmitter.explode(5, brick.x, brick.y);
+
+      this.starEmitter.active = true;
+      this.starEmitter.visible = true;
+      this.starEmitter.explode(5, brick.x, brick.y);
+
+      if (this.score == this.bricks.children.size * 10) {
+        this.scene.run(SceneKeys.Winner);
+
+        this.ball.setVisible(false);
+        this.ball.body.enable = false;
+      }
   }
 
   getScoreText() {
@@ -129,7 +169,7 @@ export default class Game extends Phaser.Scene {
           top: 80,
           left: 80
       },
-      padding: 0
+      padding: 10
     };
 
     this.bricks.children.each(child => {
@@ -141,7 +181,7 @@ export default class Game extends Phaser.Scene {
     let x = 20;
     for (let col = 0; col < brickInfo.count.col; col++) {
       for (let row = 0; row < brickInfo.count.row; row++) {
-          let brickX = (col * (brickInfo.width + brickInfo.padding)) + brickInfo.offset.left;
+          let brickX = (col * (brickInfo.width)) + brickInfo.offset.left;
           let brickY = (row * (brickInfo.height + brickInfo.padding)) + brickInfo.offset.top;
 
           const brick  = this.bricks.get(

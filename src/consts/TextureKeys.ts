@@ -1,10 +1,12 @@
 enum TextureKeys {
     Background = 'background',
     Ball = 'ball',
-    BlockBreak = 'block-break',
+    BrickPiece = 'block-piece',
     Brick = 'brick', 
     GameOver = 'game-over',
-    Paddle = 'paddle'
+    Paddle = 'paddle',
+    Star = 'star',
+    YouWon = 'you-won'
 }
 
 export default TextureKeys;

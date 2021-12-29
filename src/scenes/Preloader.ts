@@ -13,6 +13,9 @@ export default class Preloader extends Phaser.Scene {
         this.load.image(TextureKeys.Ball, 'assets/ball@2x.png');
         this.load.image(TextureKeys.Brick, 'assets/block@2x.png');
         this.load.image(TextureKeys.GameOver, 'assets/GameOver@2x.png');
+        this.load.image(TextureKeys.YouWon, 'assets/YouWon@2x.png');
+        this.load.image(TextureKeys.BrickPiece, 'assets/block_break01@2x.png');
+        this.load.image(TextureKeys.Star, 'assets/Star@2x.png');
     }
 
     create() {
