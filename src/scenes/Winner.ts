@@ -16,12 +16,16 @@ export default class Winner extends Phaser.Scene {
         this.add.image(x, y, TextureKeys.YouWon)
         .setOrigin(0.5);
 
-        this.input.keyboard.once('keydown-SPACE', () => {
-            this.scene.stop(SceneKeys.Winner);
+        this.input.once('pointerdown', this.resetGame, this);
 
-            // TODO: look into to moving this logic to the main scene
-            this.scene.stop(SceneKeys.Game);
-            this.scene.start(SceneKeys.Game);
-        });
+        this.input.keyboard.once('keydown-SPACE', this.resetGame, this);
+    }
+
+    resetGame() {
+        this.scene.stop(SceneKeys.Winner)
+
+        // TODO: look into to moving this logic to the main scene
+        this.scene.stop(SceneKeys.Game);
+        this.scene.start(SceneKeys.Game);
     }
 }

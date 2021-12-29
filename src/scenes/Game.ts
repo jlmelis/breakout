@@ -15,12 +15,16 @@ export default class Game extends Phaser.Scene {
   private scoreLabel!: Phaser.GameObjects.Text;
   private score = 0;
 
+  // Hack to get to ball start on paddle
+  private gameStarted = false;
+
   constructor() {
     super(SceneKeys.Game);
   }
 
   init() {
     this.score = 0;
+    this.gameStarted = false;
   }
 
   preload() {
@@ -49,9 +53,14 @@ export default class Game extends Phaser.Scene {
     this.paddle.setCollideWorldBounds(true);
     
     // Create Ball
-    this.ball = this.physics.add.sprite(width * 0.5, height *0.5, TextureKeys.Ball);
+    this.ball = this.physics.add.sprite(
+      this.paddle.x, 
+      height - (50 + this.paddle.height), 
+      TextureKeys.Ball
+    );
+    
     this.ball.setCollideWorldBounds(true);
-    this.ball.setVelocityY(500);
+    this.ball.setVelocityY(-500);
     this.ball.setBounce(1);
     //this.ball.body.setCircle(this.ball.body.width * 0.5);
     
@@ -106,7 +115,7 @@ export default class Game extends Phaser.Scene {
     }
 
     let pointer = this.input.activePointer;
-    if (pointer.isDown) {
+    if (pointer.isDown && this.gameStarted) {
       this.paddle.setX(pointer.x);
     }
 
@@ -130,6 +139,11 @@ export default class Game extends Phaser.Scene {
     obj1: Phaser.GameObjects.GameObject, 
     obj2: Phaser.GameObjects.GameObject
   ) {
+    //probably a better way to do this
+      if (!this.gameStarted) {
+        this.gameStarted = true;
+      }
+
       const brick = obj2 as Phaser.Physics.Arcade.Sprite;
       this.bricks.killAndHide(brick);
       brick.body.enable = false;

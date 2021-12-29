@@ -16,12 +16,16 @@ export default class GameOver extends Phaser.Scene {
         this.add.image(x, y, TextureKeys.GameOver)
         .setOrigin(0.5);
 
-        this.input.keyboard.once('keydown-SPACE', () => {
-            this.scene.stop(SceneKeys.GameOver);
+        this.input.once('pointerdown', this.resetGame, this);
 
-            // TODO: look into to moving this logic to the main scene
-            this.scene.stop(SceneKeys.Game);
-            this.scene.start(SceneKeys.Game);
-        });
+        this.input.keyboard.once('keydown-SPACE', this.resetGame, this);
+    }
+
+    resetGame() {
+        this.scene.stop(SceneKeys.GameOver)
+
+        // TODO: look into to moving this logic to the main scene
+        this.scene.stop(SceneKeys.Game);
+        this.scene.start(SceneKeys.Game);
     }
 }
