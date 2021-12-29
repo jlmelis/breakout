@@ -197,7 +197,7 @@ export default class Game extends Phaser.Scene {
   }
 
   getLevelText() {
-    return `Level: ${this.level}`;
+    return `Level: ${this.level + 1}`;
   }
 
   spawnBricks() {
