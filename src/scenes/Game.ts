@@ -23,14 +23,24 @@ export default class Demo extends Phaser.Scene {
     .setOrigin(0, 0);
 
     // Create Paddle
-    this.paddle = this.physics.add.sprite(width * 0.5, height - 30, TextureKeys.Paddle)
-    this.paddle.setScale (.25);
+    this.paddle = this.physics.add.sprite(
+      width * 0.5, height - 30, 
+      TextureKeys.Paddle);
+    this.paddle.setImmovable(true);
     this.paddle.setCollideWorldBounds(true);
-
+    this.paddle.setScale (.25);
+    
+    
     // Create Ball
     this.ball = this.physics.add.sprite(width * 0.5, height *0.5, TextureKeys.Ball);
     this.ball.setScale(.25);
     this.ball.setCollideWorldBounds(true);
+    this.ball.setVelocityY(500);
+    this.ball.setBounce(1);
+      
+
+    this.physics.add.collider(this.ball, this.paddle, this.ballHitPaddle );
+
 
     this.physics.world.setBounds(
       0,
@@ -38,7 +48,7 @@ export default class Demo extends Phaser.Scene {
       width,
       height - 30
     );
-
+    this.physics.world.checkCollision.down = false;
     
   }
 
@@ -53,4 +63,13 @@ export default class Demo extends Phaser.Scene {
       this.paddle.setVelocityX(0);
     }
   }
+
+  private ballHitPaddle(
+    obj1: Phaser.GameObjects.GameObject, 
+    obj2: Phaser.GameObjects.GameObject) {
+      const ball = obj1 as Phaser.Physics.Arcade.Sprite;
+      const paddle = obj2 as Phaser.Physics.Arcade.Sprite;
+
+      ball.setVelocityX(-1 * 5 * (paddle.x - ball.x));
+    }
 }
