@@ -169,6 +169,8 @@ export default class Game extends Phaser.Scene {
       this.bricks.killAndHide(brick);
       brick.body.enable = false;
 
+      this.ball.setVelocityX(-1 * 5 * (brick.x - this.ball.x));
+
       this.score += 10;
       this.scoreLabel.text = this.getScoreText();
 
