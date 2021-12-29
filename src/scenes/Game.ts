@@ -9,8 +9,16 @@ export default class Game extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private bricks!: Phaser.Physics.Arcade.StaticGroup;
 
+  // score properties
+  private scoreLabel!: Phaser.GameObjects.Text;
+  private score = 0;
+
   constructor() {
     super(SceneKeys.Game);
+  }
+
+  init() {
+    this.score = 0;
   }
 
   preload() {
@@ -22,6 +30,12 @@ export default class Game extends Phaser.Scene {
 
     this.background = this.add.image(0, 0, TextureKeys.Background)
     .setOrigin(0, 0);
+    this.scoreLabel = this.add.text(10, 10, this.getScoreText(), {
+      fontSize: '24px',
+			color: '#E30F0F',
+			fontStyle: 'oblique',
+      padding: { left: 15, right: 15, top: 10, bottom: 10 },
+    });
 
     // Create Paddle
     this.paddle = this.physics.add.sprite(
@@ -36,11 +50,10 @@ export default class Game extends Phaser.Scene {
     this.ball = this.physics.add.sprite(width * 0.5, height *0.5, TextureKeys.Ball);
     this.ball.setScale(.25);
     this.ball.setCollideWorldBounds(true);
-
     this.ball.setVelocityY(500);
     this.ball.setBounce(1);
+    //this.ball.body.setCircle(this.ball.body.width * 0.5);
     
-    this.ball.on('worldBounds', () => {console.log('out of bounds')});
     this.physics.add.collider(this.ball, this.paddle, this.ballHitPaddle, undefined, this );
     
 
@@ -55,6 +68,8 @@ export default class Game extends Phaser.Scene {
       height
     );
     this.physics.world.checkCollision.down = false;
+
+
     
   }
 
@@ -91,6 +106,13 @@ export default class Game extends Phaser.Scene {
       const brick = obj2 as Phaser.Physics.Arcade.Sprite;
       this.bricks.killAndHide(brick);
       brick.body.enable = false;
+
+      this.score += 10;
+      this.scoreLabel.text = this.getScoreText();
+  }
+
+  getScoreText() {
+    return `Score: ${this.score}`;
   }
 
   spawnBricks() {
@@ -103,7 +125,7 @@ export default class Game extends Phaser.Scene {
           col: 8
       },
       offset: {
-          top: 60,
+          top: 80,
           left: 90
       },
       padding: 40

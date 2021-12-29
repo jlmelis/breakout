@@ -13,11 +13,9 @@ export default class GameOver extends Phaser.Scene {
         const y = height * 0.5;
 
         this.add.text(x, y, 'Press SPACE to Play Again', {
-			fontFamily: 'Quicksand',
 			fontSize: '48px',
 			color: '#E30F0F',
 			fontStyle: 'italic',
-			stroke: '#F2EDED',
 		})
         .setOrigin(0.5);
 
