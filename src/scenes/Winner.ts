@@ -1,10 +1,24 @@
 import Phaser from 'phaser';
 import SceneKeys from '../consts/SceneKeys';
 import TextureKeys from '../consts/TextureKeys';
+import SceneData from '../gameTypes/SceneData';
+import Levels from '../gameTypes/Levels';
 
 export default class Winner extends Phaser.Scene {
+    private sceneData!: SceneData;
+    private levels = new Levels();
+
     constructor() {
-        super(SceneKeys.Winner)
+        super(SceneKeys.Winner);
+    }
+
+    // TODO: Add to scene data?
+    init(data) {
+
+        if (this.levels.gameLevels.length > data.level){
+            this.sceneData = this.levels.gameLevels[data.level];
+            this.sceneData.level = data.level;
+        }
     }
 
     create() {
@@ -26,6 +40,6 @@ export default class Winner extends Phaser.Scene {
 
         // TODO: look into to moving this logic to the main scene
         this.scene.stop(SceneKeys.Game);
-        this.scene.start(SceneKeys.Game);
+        this.scene.start(SceneKeys.Game, this.sceneData);
     }
 }

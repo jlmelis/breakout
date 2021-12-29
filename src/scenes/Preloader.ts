@@ -1,8 +1,12 @@
 import Phaser, { Scene } from 'phaser';
 import SceneKeys from '../consts/SceneKeys';
 import TextureKeys from '../consts/TextureKeys';
+import Levels from '../gameTypes/Levels';
 
 export default class Preloader extends Phaser.Scene {
+    private levels = new Levels();
+
+
     constructor() {
         super(SceneKeys.Preloader);
     }
@@ -19,6 +23,6 @@ export default class Preloader extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start(SceneKeys.Game);
+        this.scene.start(SceneKeys.Game, this.levels.gameLevels[0]);
     }
 }

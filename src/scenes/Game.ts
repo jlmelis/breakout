@@ -1,6 +1,8 @@
 import Phaser, { Scenes } from 'phaser';
 import TextureKeys from '../consts/TextureKeys';
 import SceneKeys from '../consts/SceneKeys';
+import BrickConfig from '../gameTypes/BrickConfig';
+import SceneData from '../gameTypes/SceneData';
 
 export default class Game extends Phaser.Scene {
   private background!: Phaser.GameObjects.Image;
@@ -10,6 +12,7 @@ export default class Game extends Phaser.Scene {
   private bricks!: Phaser.Physics.Arcade.StaticGroup;
   private brickPieceEmitter!: Phaser.GameObjects.Particles.ParticleEmitter;
   private starEmitter!: Phaser.GameObjects.Particles.ParticleEmitter;
+  private brickConfig!: BrickConfig;
 
   // score properties
   private scoreLabel!: Phaser.GameObjects.Text;
@@ -18,13 +21,21 @@ export default class Game extends Phaser.Scene {
   // Hack to get to ball start on paddle
   private gameStarted = false;
 
+  private levelLabel!: Phaser.GameObjects.Text;
+  private level = 0;
+
+
   constructor() {
     super(SceneKeys.Game);
   }
 
-  init() {
+  // TODO create brick config type
+  init(data: SceneData) {
     this.score = 0;
+    this.level = data.level;
     this.gameStarted = false;
+
+    this.brickConfig = data.brickConfig as BrickConfig;
   }
 
   preload() {
@@ -36,7 +47,17 @@ export default class Game extends Phaser.Scene {
 
     this.background = this.add.image(0, 0, TextureKeys.Background)
     .setOrigin(0, 0);
+    
     this.scoreLabel = this.add.text(10, 10, this.getScoreText(), {
+			fontSize: '36px',
+			color: '#F4F1F1',
+			fontStyle: 'normal',
+			stroke: '#000000',
+			strokeThickness: 2,
+      
+    });
+
+    this.levelLabel = this.add.text(width - 200, 10, this.getLevelText(), {
 			fontSize: '36px',
 			color: '#F4F1F1',
 			fontStyle: 'normal',
@@ -160,7 +181,9 @@ export default class Game extends Phaser.Scene {
       this.starEmitter.explode(5, brick.x, brick.y);
 
       if (this.score == this.bricks.children.size * 10) {
-        this.scene.run(SceneKeys.Winner);
+        this.level ++;
+        
+        this.scene.run(SceneKeys.Winner, {level: this.level});
 
         this.ball.setVisible(false);
         this.ball.body.enable = false;
@@ -171,42 +194,35 @@ export default class Game extends Phaser.Scene {
     return `Score: ${this.score}`;
   }
 
-  spawnBricks() {
-    // TODO: make this configurable for different levels
-    const brickInfo = {
-      width: 92,
-      height: 35,
-      count: {
-          row: 3,
-          col: 8
-      },
-      offset: {
-          top: 80,
-          left: 80
-      },
-      padding: 10
-    };
+  getLevelText() {
+    return `Level: ${this.level}`;
+  }
 
+  spawnBricks() {
     this.bricks.children.each(child => {
       const brick = child as Phaser.Physics.Arcade.Sprite;
       this.bricks.killAndHide(brick);
       brick.body.enable = false;
     });
 
-    let x = 20;
-    for (let col = 0; col < brickInfo.count.col; col++) {
-      for (let row = 0; row < brickInfo.count.row; row++) {
-          let brickX = (col * (brickInfo.width)) + brickInfo.offset.left;
-          let brickY = (row * (brickInfo.height + brickInfo.padding)) + brickInfo.offset.top;
+   for (let row = 0; row < this.brickConfig.rows.length; row++) {
+     let brickRow = this.brickConfig.rows[row];
+     for (let col = 0; col < brickRow.length; col++) {
 
+       let placeBrick = brickRow[col] == 1;
+
+       if (placeBrick) {
+          let brickX = (col * (this.brickConfig.width)) + this.brickConfig.offsetLeft;
+          let brickY = (row * (this.brickConfig.height + this.brickConfig.padding)) + this.brickConfig.offsetTop;
           this.bricks.get(
             brickX,
             brickY,
             TextureKeys.Brick
           ) as Phaser.Physics.Arcade.Sprite;
-
-      }
-    }
+        }
+     }
+     
+   }
 
   }
 
