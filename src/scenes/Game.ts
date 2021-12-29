@@ -2,11 +2,12 @@ import Phaser, { Scenes } from 'phaser';
 import TextureKeys from '../consts/TextureKeys';
 import SceneKeys from '../consts/SceneKeys';
 
-export default class Demo extends Phaser.Scene {
+export default class Game extends Phaser.Scene {
   private background!: Phaser.GameObjects.Image;
   private paddle!: Phaser.Physics.Arcade.Sprite;
   private ball!: Phaser.Physics.Arcade.Sprite;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private bricks!: Phaser.Physics.Arcade.StaticGroup;
 
   constructor() {
     super(SceneKeys.Game);
@@ -37,10 +38,13 @@ export default class Demo extends Phaser.Scene {
     this.ball.setCollideWorldBounds(true);
     this.ball.setVelocityY(500);
     this.ball.setBounce(1);
-      
+       
+    this.physics.add.collider(this.ball, this.paddle, this.ballHitPaddle, undefined, this );
+    
 
-    this.physics.add.collider(this.ball, this.paddle, this.ballHitPaddle );
-
+    this.bricks = this.physics.add.staticGroup();
+    this.spawnBricks();
+    this.physics.add.collider(this.ball, this.bricks, this.ballHitBricks, undefined, this );
 
     this.physics.world.setBounds(
       0,
@@ -66,10 +70,60 @@ export default class Demo extends Phaser.Scene {
 
   private ballHitPaddle(
     obj1: Phaser.GameObjects.GameObject, 
-    obj2: Phaser.GameObjects.GameObject) {
-      const ball = obj1 as Phaser.Physics.Arcade.Sprite;
-      const paddle = obj2 as Phaser.Physics.Arcade.Sprite;
+    obj2: Phaser.GameObjects.GameObject
+  ) {
+      this.ball.setVelocityX(-1 * 5 * (this.paddle.x - this.ball.x));
+  }
 
-      ball.setVelocityX(-1 * 5 * (paddle.x - ball.x));
+  private ballHitBricks(
+    obj1: Phaser.GameObjects.GameObject, 
+    obj2: Phaser.GameObjects.GameObject
+  ) {
+      const brick = obj2 as Phaser.Physics.Arcade.Sprite;
+      this.bricks.killAndHide(brick);
+      brick.body.enable = false;
+  }
+
+  spawnBricks() {
+    // TODO: make this configurable for different levels
+    const brickInfo = {
+      width: 50,
+      height: 20,
+      count: {
+          row: 3,
+          col: 8
+      },
+      offset: {
+          top: 60,
+          left: 90
+      },
+      padding: 40
+    };
+
+    this.bricks.children.each(child => {
+      const brick = child as Phaser.Physics.Arcade.Sprite;
+      this.bricks.killAndHide(brick);
+      brick.body.enable = false;
+    });
+
+    let x = 20;
+    for (let col = 0; col < brickInfo.count.col; col++) {
+      for (let row = 0; row < brickInfo.count.row; row++) {
+          let brickX = (col * (brickInfo.width + brickInfo.padding)) + brickInfo.offset.left;
+          let brickY = (row * (brickInfo.height + brickInfo.padding)) + brickInfo.offset.top;
+
+          const brick  = this.bricks.get(
+            brickX,
+            brickY,
+            TextureKeys.Brick
+          ) as Phaser.Physics.Arcade.Sprite;
+
+          // brick.setActive(true);
+          // const body = brick.body as Phaser.Physics.Arcade.StaticBody;
+          // body.enable = true;
+      }
     }
+
+  }
+
 }
