@@ -47,8 +47,6 @@ export default class Game extends Phaser.Scene {
       TextureKeys.Paddle);
     this.paddle.setImmovable(true);
     this.paddle.setCollideWorldBounds(true);
-
-    
     
     // Create Ball
     this.ball = this.physics.add.sprite(width * 0.5, height *0.5, TextureKeys.Ball);
@@ -93,8 +91,6 @@ export default class Game extends Phaser.Scene {
       height
     );
     this.physics.world.checkCollision.down = false;
-
-
     
   }
 
@@ -107,11 +103,6 @@ export default class Game extends Phaser.Scene {
     }
     else {
       this.paddle.setVelocityX(0);
-    }
-
-    // touch input
-    if(this.input.mousePointer.isDown) {
-      this.paddle.setPosition(this.input.x, this.paddle.y);
     }
 
     // Out of bounds check. if the ball bounds are still within the world this returns true
