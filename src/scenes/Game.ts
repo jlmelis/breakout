@@ -31,10 +31,12 @@ export default class Game extends Phaser.Scene {
     this.background = this.add.image(0, 0, TextureKeys.Background)
     .setOrigin(0, 0);
     this.scoreLabel = this.add.text(10, 10, this.getScoreText(), {
-      fontSize: '24px',
-			color: '#E30F0F',
-			fontStyle: 'oblique',
-      padding: { left: 15, right: 15, top: 10, bottom: 10 },
+			fontSize: '36px',
+			color: '#F4F1F1',
+			fontStyle: 'normal',
+			stroke: '#000000',
+			strokeThickness: 2,
+      
     });
 
     // Create Paddle
@@ -43,12 +45,11 @@ export default class Game extends Phaser.Scene {
       TextureKeys.Paddle);
     this.paddle.setImmovable(true);
     this.paddle.setCollideWorldBounds(true);
-    this.paddle.setScale (.25);
+
     
     
     // Create Ball
     this.ball = this.physics.add.sprite(width * 0.5, height *0.5, TextureKeys.Ball);
-    this.ball.setScale(.25);
     this.ball.setCollideWorldBounds(true);
     this.ball.setVelocityY(500);
     this.ball.setBounce(1);
@@ -118,17 +119,17 @@ export default class Game extends Phaser.Scene {
   spawnBricks() {
     // TODO: make this configurable for different levels
     const brickInfo = {
-      width: 50,
-      height: 20,
+      width: 92,
+      height: 35,
       count: {
           row: 3,
           col: 8
       },
       offset: {
           top: 80,
-          left: 90
+          left: 80
       },
-      padding: 40
+      padding: 0
     };
 
     this.bricks.children.each(child => {
