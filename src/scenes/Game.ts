@@ -153,7 +153,7 @@ export default class Game extends Phaser.Scene {
     obj1: Phaser.GameObjects.GameObject, 
     obj2: Phaser.GameObjects.GameObject
   ) {
-      this.ball.setVelocityX(-1 * 5 * (this.paddle.x - this.ball.x));
+      this.ball.setVelocityX(-1 * 3 * (this.paddle.x - this.ball.x));
   }
 
   private ballHitBricks(
@@ -169,7 +169,7 @@ export default class Game extends Phaser.Scene {
       this.bricks.killAndHide(brick);
       brick.body.enable = false;
 
-      this.ball.setVelocityX(-1 * 5 * (brick.x - this.ball.x));
+      this.ball.setVelocityX(-1 * 3 * (brick.x - this.ball.x));
 
       this.score += 10;
       this.scoreLabel.text = this.getScoreText();
