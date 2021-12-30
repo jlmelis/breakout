@@ -1,6 +1,6 @@
 # Breakout style game
 
-Panda themed breakout styled game. I am using this to apply things learned from several Phaser tutorials.
+Panda themed breakout style game. I am using this to apply things learned from several Phaser tutorials.
 
 ## NOTE
 This is a learning project. The code isn't perfect and will be refactored as I learn more about the Phaser 3 frame work.

@@ -13,6 +13,7 @@ export default class Game extends Phaser.Scene {
   private brickPieceEmitter!: Phaser.GameObjects.Particles.ParticleEmitter;
   private starEmitter!: Phaser.GameObjects.Particles.ParticleEmitter;
   private brickConfig!: BrickConfig;
+  private hearts!: Phaser.GameObjects.Group;
 
   // score properties
   private scoreLabel!: Phaser.GameObjects.Text;
@@ -24,6 +25,9 @@ export default class Game extends Phaser.Scene {
   private levelLabel!: Phaser.GameObjects.Text;
   private level = 0;
 
+  // lives
+  private maxLives = 2;
+  private lives = 0;
 
   constructor() {
     super(SceneKeys.Game);
@@ -32,6 +36,7 @@ export default class Game extends Phaser.Scene {
   // TODO create brick config type
   init(data: SceneData) {
     this.score = 0;
+    this.lives = this.maxLives;
     this.level = data.level;
     this.gameStarted = false;
 
@@ -66,6 +71,9 @@ export default class Game extends Phaser.Scene {
       
     });
 
+    this.hearts = this.add.group();
+    this.drawHearts();
+
     // Create Paddle
     this.paddle = this.physics.add.sprite(
       width * 0.5, height - 50, 
@@ -83,7 +91,7 @@ export default class Game extends Phaser.Scene {
     this.ball.setCollideWorldBounds(true);
     this.ball.setVelocityY(-500);
     this.ball.setBounce(1);
-    //this.ball.body.setCircle(this.ball.body.width * 0.5);
+  
     
     this.physics.add.collider(this.ball, this.paddle, this.ballHitPaddle, undefined, this );
     
@@ -91,6 +99,8 @@ export default class Game extends Phaser.Scene {
     this.bricks = this.physics.add.staticGroup();
     this.spawnBricks();
     this.physics.add.collider(this.ball, this.bricks, this.ballHitBricks, undefined, this );
+
+
 
     // emmitters for block explosion
     this.brickPieceEmitter = this.add.particles(TextureKeys.BrickPiece).createEmitter({
@@ -125,6 +135,8 @@ export default class Game extends Phaser.Scene {
   }
 
   update(t: Number, dt: Number) {
+    const { height } = this.scale;
+
     if(this.cursors.left.isDown) {
       this.paddle.setVelocityX(-500);
     }
@@ -143,8 +155,19 @@ export default class Game extends Phaser.Scene {
     // Out of bounds check. if the ball bounds are still within the world this returns true
     // if false that means the ball has lefft the screen and we need to end the game.
     if (!Phaser.Geom.Rectangle.Overlaps(this.physics.world.bounds, this.ball.getBounds())) {
-      //console.log('world bounds');
-      this.scene.run(SceneKeys.GameOver);
+      // Todo move to function
+      if (this.lives > 1 ) {
+        this.ball.setPosition(
+          this.paddle.x, 
+          height - (50 + this.paddle.height));
+      } else {
+        // kill assets on game over?
+        this.scene.run(SceneKeys.GameOver);
+        this.scene.pause(SceneKeys.Game);
+      }
+      
+      this.lives --;
+      this.drawHearts();
     }
 
   }
@@ -200,6 +223,36 @@ export default class Game extends Phaser.Scene {
     return `Level: ${this.level + 1}`;
   }
 
+  // TOD: find out if there is a better way
+  drawHearts() {
+    this.hearts.children.each(child => {
+      const heart = child as Phaser.GameObjects.Image;
+      this.hearts.killAndHide(heart);
+    });
+    this.hearts.children.clear();
+
+    for (let numLives = 0; numLives < this.maxLives; numLives++) {
+      let heartX = 390 + (45 * numLives);
+      let heartY = 30;
+     
+      if (numLives < this.lives) {
+        this.hearts.get(
+          heartX,
+          heartY,
+          TextureKeys.HeartFilled
+        );
+      } else {
+        this.hearts.get(
+          heartX,
+          heartY,
+          TextureKeys.HeartOutline
+        );
+      }
+
+    }
+
+  }
+
   spawnBricks() {
     this.bricks.children.each(child => {
       const brick = child as Phaser.Physics.Arcade.Sprite;
@@ -220,7 +273,7 @@ export default class Game extends Phaser.Scene {
             brickX,
             brickY,
             TextureKeys.Brick
-          ) as Phaser.Physics.Arcade.Sprite;
+          );
         }
      }
      
