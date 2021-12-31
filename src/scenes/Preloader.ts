@@ -29,6 +29,7 @@ export default class Preloader extends Phaser.Scene {
         this.load.image(TextureKeys.LargePanda, 'assets/paddle@3x.png');
         this.load.image(TextureKeys.Ball, 'assets/ball@2x.png');
         this.load.image(TextureKeys.Brick, 'assets/block@2x.png');
+        this.load.image(TextureKeys.ButtonBackground, 'assets/block@3x.png')
         this.load.image(TextureKeys.GameOver, 'assets/GameOver@2x.png');
         this.load.image(TextureKeys.YouWon, 'assets/YouWon@2x.png');
         this.load.image(TextureKeys.BrickPiece, 'assets/block_break01@2x.png');
@@ -68,12 +69,12 @@ export default class Preloader extends Phaser.Scene {
 		})
         .setOrigin(0.5, 0.5);
 
+        this.add.image(width * 0.5, height * 0.5, TextureKeys.ButtonBackground);
         this.begginer = this.add.text(width * 0.5, height * 0.5, 'Beginner', {
 			fontSize: '36px',
-			color: '#5CB434',
+            color: '#5CB434',
             stroke: '#060606',
-			strokeThickness: 4
-
+			strokeThickness: 3
 		})
         .setOrigin(0.5, 0.5);
 

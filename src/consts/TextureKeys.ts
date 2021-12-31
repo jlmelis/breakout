@@ -3,6 +3,7 @@ enum TextureKeys {
     Ball = 'ball',
     BrickPiece = 'block-piece',
     Brick = 'brick', 
+    ButtonBackground = 'button-background',
     GameOver = 'game-over',
     HeartOutline = 'heart-outline',
     HeartFilled = 'heart-filled',
