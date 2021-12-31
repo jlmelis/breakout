@@ -72,9 +72,7 @@ export default class Preloader extends Phaser.Scene {
         this.add.image(width * 0.5, height * 0.5, TextureKeys.ButtonBackground);
         this.begginer = this.add.text(width * 0.5, height * 0.5, 'Beginner', {
 			fontSize: '36px',
-            color: '#5CB434',
-            stroke: '#060606',
-			strokeThickness: 3
+            color: '#000000',
 		})
         .setOrigin(0.5, 0.5);
 
