@@ -11,5 +11,5 @@ This is a learning project. The code isn't perfect and will be refactored as I l
   * https://ourcade.co/books/infinite-runner-phaser3/
 
 ## Resources used
-  * Art Assets: https://www.gameartguppy.com/shop/breakout-panda/?attribute_file-type=Images+Only
+  * Art Assets: https://www.gameartguppy.com/shop/breakout-panda/
   * Template Starter: https://github.com/geocine/phaser3-rollup-typescript
